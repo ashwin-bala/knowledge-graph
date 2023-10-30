@@ -1,0 +1,1 @@
+web: /var/app/venv/staging-LQM1lest/bin/streamlit run InputText.py --server.port=5000
