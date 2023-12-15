@@ -6,6 +6,7 @@ from langchain.document_loaders import AmazonTextractPDFLoader
 import time
 import libs.envvars as ENVVars
 
+import libs.llmhelper as llmHelper
 
 import boto3
 import libs.neo4jdb as neo4dbLibs
@@ -43,10 +44,10 @@ def extractFromRepairManuals(s3FilePath):
     return docs
 
 
-s3FilePath = f"s3://{ENVVars.ENV_S3_FOLDER}/Crawfords_Auto_Repair_Guide-gen-maintenance-only-5pgs.pdf"
 
 
-def extractAndStore(getGraphDbConnect, extractAndStoreGraph):
+def extractAndStore(fileName):
+    s3FilePath = f"s3://{ENVVars.ENV_S3_FOLDER}/{fileName}"
     if 'extractAndStore' not in st.session_state:
         with st.status(":blue[Convert PDF to text, Extract Entities and Relationships using LLM and store them into Graph Database ...]", expanded=True) as status:
             st.write("1. Extract text from the PDF Document..")
@@ -59,7 +60,7 @@ def extractAndStore(getGraphDbConnect, extractAndStoreGraph):
                documents = st.session_state['processPDF']
             time.sleep(3)
             st.write("3. Extract Entities and Relationships using Open AI LLM Model..")
-            extractAndStoreGraph(documents,getGraphDbConnect())
+            llmHelper.extractAndStoreGraph(documents,getGraphDbConnect())
             time.sleep(2)
             st.write("4. Store the Entities and Relationships as Graph Nodes in Graph Database..")
             time.sleep(1)
@@ -73,9 +74,13 @@ lst = s3Upload.list_files(ENVVars.ENV_S3_FOLDER)
 st.header("Reading the document from S3 bucket")
 option = st.selectbox(
     "Please find the files in bucket",
-    lst
+    lst,
+    index=None,
+    placeholder="Please select the file name..."
 )
-#extractAndStore(getGraphDbConnect, extractAndStoreGraph)            
+if option != '' and option is not None:
+    print("-----",option)
+    extractAndStore(option)            
 
 
 

@@ -44,16 +44,16 @@ def extractFromRepairManuals(filePath):
 
 
 def extractAndStore():
-    if 'extractAndStore' not in st.session_state:
+    #if 'extractAndStore' not in st.session_state:
         with st.status(":blue[Convert PDF to text, Extract Entities and Relationships using LLM and store them into Graph Database ...]", expanded=True) as status:
             st.write("1. Extract text from the PDF Document..")
             time.sleep(2)
             st.write("2. Chunking the text..")
-            if 'processPDF' not in st.session_state:
-                documents = extractFromRepairManuals("input.pdf")
-                st.session_state['processPDF'] = documents
-            else:                
-               documents = st.session_state['processPDF']
+    #        if 'processPDF' not in st.session_state:
+            documents = extractFromRepairManuals("input.pdf")
+    #            st.session_state['processPDF'] = documents
+            # else:                
+            #    documents = st.session_state['processPDF']
             time.sleep(3)
             st.write("3. Extract Entities and Relationships using Open AI LLM Model..")
             llmHelper.extractAndStoreGraph(documents,getGraphDbConnect())
@@ -61,7 +61,7 @@ def extractAndStore():
             st.write("4. Store the Entities and Relationships as Graph Nodes in Graph Database..")
             time.sleep(1)
             status.update(label=":blue[Entity Extraction and Storage is complete]", state="complete", expanded=False)
-            st.session_state['extractAndStore'] = 'yes'
+    #        st.session_state['extractAndStore'] = 'yes'
 
 
 
@@ -106,8 +106,9 @@ def deleteFiles(fileName):
 # Query the knowledge graph in a RAG application
 form = st.form("my_form")
 manualInput = form.text_area(label="Enter your text to identify entities and relationships")
-form.form_submit_button("Submit")
-if manualInput != '':
+submitted = form.form_submit_button("Submit")
+
+if submitted and manualInput != '':
     print("Writing the input to text file-started")
     with open("input.txt", "w") as text_file:
         text_file.write(manualInput)

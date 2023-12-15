@@ -31,5 +31,5 @@ def list_files(bucket_name):
     files = []
     for fileObk in s3_client.list_objects(Bucket=bucket_name)['Contents']:
         if 'archive' not in fileObk["Key"]:
-            print(files.append(fileObk["Key"]))
+            files.append(fileObk["Key"])
     return files    

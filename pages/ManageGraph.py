@@ -25,3 +25,5 @@ if st.session_state.clicked:
         st.success('Data deleted in graphDB!', icon="✅")
     else:
         st.error('Data was not deleted in graphDB', icon="🚨")
+    st.session_state.clicked = False
+    
